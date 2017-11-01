@@ -376,7 +376,11 @@ func marshalSlice(values []interface{}) ([]*dynamodb.AttributeValue, error) {
 }
 
 func fieldInfo(field reflect.StructField) (name, special string, omitempty bool) {
-	tags := strings.Split(field.Tag.Get("dynamo"), ",")
+	fieldTag := field.Tag.Get("dynamo")
+	if len(fieldTag) == 0 {
+		fieldTag = field.Tag.Get("json")
+	}
+	tags := strings.Split(fieldTag, ",")
 	if len(tags) == 0 {
 		return field.Name, "", false
 	}
